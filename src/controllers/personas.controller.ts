@@ -46,22 +46,7 @@ const postPersona = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()})
     }
-    // var p = await Personas.findOne({
-    //   where: {
-    //     correo: persona.correo
-    //   },
-    //   paranoid: false
-    // });
-    // if (p?.deletedAt) {
-    //   await Personas.restore({
-    //     where: {
-    //       [Op.eq]: {
-    //         id: persona.id
-    //       }
-    //     }
-    //   });
 
-    // }
       var count = await Personas.count({
       where: {
         correo: persona.correo
