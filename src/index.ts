@@ -1,16 +1,17 @@
-const express = require("express");
-const sequelize = require("./src/db/database");
-
-const app = express();
+import express, { Express} from "express";
+import { sequelize } from "./db/database";
+import router from "./routers/personas.router";
+const app:Express = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routers
-app.use("/api/personas", require("./src/routers/personas.router"));
+app.use("/api/personas", router);
 
 async function main() {
+  console.log("Iniciado");
   try {
     await sequelize.sync({ force: false });
     console.log("Conexión establecida con la base de datos");
