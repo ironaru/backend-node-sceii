@@ -1,17 +1,13 @@
-import express, { Express} from "express";
+import express from "express";
 import {deletePersonas,getPersona, getPersonas,postPersona, putPersonas} from "../controllers/personas.controller";
-import {validationResult} from 'express-validator'
 import createPersonaValidator from "../models/validators/personas.validator";
-const router = express.Router();
-
-
+const routerPersonas = express.Router();
 
 // mostrar todos las personas
-router.get("/", getPersonas);
-router.get("/:id", getPersona);
-router.post("/", createPersonaValidator,postPersona);
-router.put("/:id", createPersonaValidator, putPersonas);
-router.delete("/:id", deletePersonas);
+routerPersonas.get("/", getPersonas);
+routerPersonas.get("/:id", getPersona);
+routerPersonas.post("/", createPersonaValidator,postPersona);
+routerPersonas.put("/:id", createPersonaValidator, putPersonas);
+routerPersonas.delete("/:id", deletePersonas);
 
-
-export default router;
+export default routerPersonas;

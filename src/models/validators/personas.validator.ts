@@ -7,7 +7,7 @@ export const createPersonaValidator = [
     body('correo', 'Correo invalido').not().isEmpty().isEmail(),
     body('ci', 'El campo ci no puede estar vacío').not().isEmpty().isNumeric(),
     body('plan', 'El campo plan no puede estar vacío').not().isEmpty(),
-    body('celular', 'El campo celular solo debe contener numeros').not().isEmpty().isNumeric(),
+    body('celular', 'El campo celular solo debe contener numeros').not().isEmpty(),
 ]
 
 export default createPersonaValidator;

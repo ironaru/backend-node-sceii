@@ -1,7 +1,7 @@
-
-
 import { DataTypes, Model, Optional } from 'sequelize'
 import sequelize from '../db/database';
+import Identificadores from './identificadores';
+
 interface PersonasAtributos {
     id: number;
     nombres: string;
@@ -11,13 +11,14 @@ interface PersonasAtributos {
     organizacion: string;
     ci:number;
     plan:string;
-    celular:number;
+    celular:string;
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
 }
-export interface PersonasInput extends Optional<PersonasAtributos, 'id'> {}
-export interface PersonasOuput extends Required<PersonasAtributos> {}
+
+export interface PersonasInput extends Optional<PersonasAtributos, 'id'> {} 
+export interface PersonasOutput extends Required<PersonasAtributos> {}
 
 class Personas extends Model<PersonasAtributos, PersonasInput> implements PersonasAtributos {
     id!: number;
@@ -28,7 +29,7 @@ class Personas extends Model<PersonasAtributos, PersonasInput> implements Person
     organizacion!: string;
     ci!: number;
     plan!: string; 
-    celular!: number;
+    celular!: string;
     readonly createdAt!: Date;
     readonly updatedAt!: Date;
     readonly deletedAt!: Date;
@@ -70,27 +71,30 @@ Personas.init({
             allowNull: false
         },
         celular: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         createdAt: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            field:"created_at"
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            field:"updated_at"
         },
-        deletedAt: {
+        deletedAt: { 
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: true,
+            field:"deleted_at"
         }
     }, {
+        tableName: "personas",
         timestamps: true,
         sequelize: sequelize,
         paranoid: true
     }
 )
-
 
 export default Personas;

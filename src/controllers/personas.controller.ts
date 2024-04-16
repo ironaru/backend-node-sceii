@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 import {validationResult} from 'express-validator'
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
+  
   try {
     var personas: Personas[] = [];
     await Personas.findAll({

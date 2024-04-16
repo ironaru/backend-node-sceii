@@ -1,26 +1,32 @@
 import express, { Express} from "express";
 import { sequelize } from "./db/database";
-import router from "./routers/personas.router";
+import routerPersonas from "./routers/personas.router";
+import routerIdentificadores from "./routers/identificadores.router";
+const cors = require('cors')
 const app:Express = express();
+const port: number = 3000;
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors({
+  origin: '*',
+  preflightContinue: true
+}));
 
 // Routers
-app.use("/api/personas", router);
+app.use("/api/personas", routerPersonas);
+app.use("/api/identificadores", routerIdentificadores);
 
 async function main() {
-  console.log("Iniciado");
   try {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: true});
     console.log("Conexión establecida con la base de datos");
 
-    app.listen(3000, () => console.log("Escuchando en el puerto 3000"));
+    app.listen(port, () => console.log("Escuchando en el puerto "+port));
   } catch (error) {
     console.error("Error al conectar con la base de datos", error);
   }
 }
-
 
 main();
