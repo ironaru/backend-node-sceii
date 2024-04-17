@@ -19,14 +19,14 @@ app.use("/api/personas", routerPersonas);
 app.use("/api/identificadores", routerIdentificadores);
 
 async function main() {
-  try {
-    await sequelize.sync({ force: true});
-    console.log("Conexión establecida con la base de datos");
+  try { 
+    await sequelize.sync({ force: false}); 
+    console.log("Conexión establecida con la base de datos"); 
 
     app.listen(port, () => console.log("Escuchando en el puerto "+port));
   } catch (error) {
     console.error("Error al conectar con la base de datos", error);
-  }
+  } 
 }
 
 main();

@@ -1,18 +1,42 @@
 import express, { Express, Request, Response } from "express";
 import Identificadores from "../models/identificadores";
+import Personas from "../models/personas";
 
-const getIdentificador = async (req: Request, res: Response) => {
-    
-    try{
+const getIdentificadores = async (req: Request, res: Response) => {
+
+    try {
         var identificadores: Identificadores[] = [];
-        await Identificadores.findAll().then((list: Identificadores[])=>{
+        await Identificadores.findAll(
+            {
+            include: {
+                model: Personas,
+            },
+              order: [['id', 'ASC']] 
+            }
+        )
+            .then((list: Identificadores[]) => {
             identificadores = list
         });
         return res.status(200).json(identificadores);
-    }catch (error: any) {
+    } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }
-    
+
+};
+const getIdentificador = async (req: Request, res: Response) => {
+    try {
+        var id: string = req.params.id;
+        var identificador: Identificadores = await Identificadores.findOne({ where: { id: id }, include: Personas }) as any;
+
+        if (identificador == undefined || identificador == null) {
+            return res.status(404).json({ message: 'Identificador no encontrado' });
+        }
+        return res.json(identificador);
+
+    } catch (error: any) {
+        return res.status(500).json({ message: error.message });
+    }
 };
 
-export {getIdentificador};
+
+export { getIdentificadores, getIdentificador };

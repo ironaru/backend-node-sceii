@@ -1,7 +1,9 @@
 import Personas from "../models/personas";
+import Identificadores from "../models/identificadores";
 import express, { Express, Request, Response } from "express";
 const { Op } = require("sequelize");
 import {validationResult} from 'express-validator'
+import { PersonasDTO,getDatosIdentificador,getDatosPersona } from "../models/dto/personasDTO";
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
   
@@ -42,37 +44,25 @@ const getPersona = async (req: Request, res: Response) => {
 // post personas
 const postPersona = async (req: Request, res: Response) => {
   try {
-    var persona: Personas = req.body;
+    let personaDTO: PersonasDTO = req.body as PersonasDTO;
+
+    
+    let persona: Personas= getDatosPersona(personaDTO);
+    let identificador:Identificadores = getDatosIdentificador(personaDTO);
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()})
     }
 
-      var count = await Personas.count({
-      where: {
-        correo: persona.correo
-      },
-      paranoid: false
-    });
-    if(count>0){
-      return res.status(226).json({ message: "El correo ya existe" });
-    }
-
-    count = await Personas.count({
-      where: {
-        celular: persona.celular
-      },
-      paranoid: false
-    });
-    if(count>0){
-      return res.status(226).json({ message: "El celular ya existe" });
-    }
-
-
+    
     await Personas.create(persona).then((p: Personas) => {
       persona = p;
     })
-    return res.json(persona);
+
+    let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
+    identificadorCreated.persona_id = persona.id
+    identificadorCreated.save();
+    return res.json(persona); 
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
@@ -100,7 +90,6 @@ const putPersonas = async (req: Request, res: Response) => {
 
 // delete personas
 const deletePersonas = async (req: Request, res: Response) => {
-  var persona: Personas = req.body;
   var id: string = req.params.id;
   try {
     await Personas.findByPk(id);
@@ -109,5 +98,24 @@ const deletePersonas = async (req: Request, res: Response) => {
     return res.status(500).json({ message: error.message });
   }
 }
+//Get persona by codigo_qr
+const getPersonaByQr =  async (req: Request, res: Response) => {
+  var qr: string = req.params.qr;
+  console.log(qr);
+  
+  try {
+    let identificador = await Identificadores.findOne({where:{codigo_qr:qr}});
 
-export { getPersonas, getPersona, postPersona, putPersonas, deletePersonas };
+    if(identificador == null || identificador == undefined) {
+      return res.status(404).json({message:"Persona no encontrada"})
+    }
+    
+    let persona = await Personas.findOne({where:{id:identificador?.id}});
+    return res.json(persona);
+
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export { getPersonas, getPersona, postPersona, putPersonas, deletePersonas,getPersonaByQr };
