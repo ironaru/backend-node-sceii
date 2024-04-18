@@ -32,7 +32,8 @@ Identificadores.init({
     persona_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        field: "persona_id"
+        field: "persona_id",
+        unique: true
     }
 }, {
     timestamps: false,

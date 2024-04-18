@@ -108,36 +108,42 @@ Identificadores.belongsTo(Personas, {
 );
 Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Personas) => {
     try {
-        let identificador:Identificadores = await Identificadores.findOne({
+        let identificador: Identificadores = await Identificadores.findOne({
             where: {
                 persona_id: {
                     [Op.is]: null
                 }
             }, order: [['id', 'ASC']]
         }) as any;
-        if (!identificador) {
+        if (identificador==null || identificador == undefined) {
             throw new Error('Identificadores no disponibles');
         }
     } catch (error) {
         throw error;
     }
 });
-Personas.afterCreate("addQR", async (persona: Personas) => {
+Personas.afterValidate("addQR", async (persona: Personas) => {
     try {
-        let identificador:Identificadores = await Identificadores.findOne({
+        var identificador: Identificadores = await Identificadores.findOne({
             where: {
-                persona_id:{
-                    [Op.is]:null
+                persona_id: {
+                    [Op.is]: null
                 }
             }, order: [['id', 'ASC']]
         }) as any;
-        if (!identificador) {
-          throw new Error('Identificador no disponible');
+    if (identificador==null || identificador == undefined) {
+            await Personas.destroy({
+                where: {
+                    id: persona.id,
+                },
+                force: true,
+            });
+            throw new Error('Identificadores no disponibles');
         }
-        identificador.persona_id =persona.id;
+        identificador.persona_id = persona.id;
         identificador.save();
-      } catch (error) {
+    } catch (error) {
         throw error;
-      }
+    }
 });
 export default Personas;
