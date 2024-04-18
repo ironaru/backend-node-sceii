@@ -44,25 +44,20 @@ const getPersona = async (req: Request, res: Response) => {
 // post personas
 const postPersona = async (req: Request, res: Response) => {
   try {
-    let personaDTO: PersonasDTO = req.body as PersonasDTO;
-
-    
-    let persona: Personas= getDatosPersona(personaDTO);
-    let identificador:Identificadores = getDatosIdentificador(personaDTO);
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()})
-    }
-
-    
+    // let personaDTO: PersonasDTO = req.body as PersonasDTO;
+    let persona: Personas= req.body;
+    // let identificador:Identificadores = getDatosIdentificador(personaDTO);
+    // const errors = validationResult(req)
+    // if (!errors.isEmpty()) {
+    //   return res.status(422).json({errors: errors.array()})
+    // }
     await Personas.create(persona).then((p: Personas) => {
       persona = p;
-    })
-
-    let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
-    identificadorCreated.persona_id = persona.id
-    identificadorCreated.save();
-    return res.json(persona); 
+    });
+    // let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
+    // identificadorCreated.persona_id = persona.id
+    // identificadorCreated.save();
+    return res.json(persona);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
@@ -107,10 +102,13 @@ const getPersonaByQr =  async (req: Request, res: Response) => {
     let identificador = await Identificadores.findOne({where:{codigo_qr:qr}});
 
     if(identificador == null || identificador == undefined) {
-      return res.status(404).json({message:"Persona no encontrada"})
+      return res.status(404).json({message:"Identificador QR no encontrado"})
+    }
+    if(identificador.persona_id == null || identificador.persona_id == undefined) {
+      return res.status(404).json({message:"Identificador QR no asociado"})
     }
     
-    let persona = await Personas.findOne({where:{id:identificador?.id}});
+    let persona = await Personas.findOne({where:{id:identificador.persona_id}});
     return res.json(persona);
 
   } catch (error: any) {

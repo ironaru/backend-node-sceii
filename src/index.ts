@@ -20,7 +20,7 @@ app.use("/api/identificadores", routerIdentificadores);
 
 async function main() {
   try { 
-    await sequelize.sync({ force: false}); 
+    await sequelize.sync({ force: false }); 
     console.log("Conexión establecida con la base de datos"); 
 
     app.listen(port, () => console.log("Escuchando en el puerto "+port));

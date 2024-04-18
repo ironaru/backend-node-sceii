@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import Identificadores from "../models/identificadores";
 import Personas from "../models/personas";
+const { Op } = require("sequelize");
 
 const getIdentificadores = async (req: Request, res: Response) => {
 
@@ -8,6 +9,11 @@ const getIdentificadores = async (req: Request, res: Response) => {
         var identificadores: Identificadores[] = [];
         await Identificadores.findAll(
             {
+            where:{
+                persona_id:{
+                    [Op.not]: null,
+                }
+            },
             include: {
                 model: Personas,
             },

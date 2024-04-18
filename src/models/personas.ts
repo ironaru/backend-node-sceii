@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize'
 import sequelize from '../db/database';
 import Identificadores from './identificadores';
-
+const { Op } = require("sequelize");
 interface PersonasAtributos {
     id: number;
     nombres: string;
@@ -106,5 +106,38 @@ Identificadores.belongsTo(Personas, {
     targetKey: "id",
 }
 );
-
+Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Personas) => {
+    try {
+        let identificador:Identificadores = await Identificadores.findOne({
+            where: {
+                persona_id: {
+                    [Op.is]: null
+                }
+            }, order: [['id', 'ASC']]
+        }) as any;
+        if (!identificador) {
+            throw new Error('Identificadores no disponibles');
+        }
+    } catch (error) {
+        throw error;
+    }
+});
+Personas.afterCreate("addQR", async (persona: Personas) => {
+    try {
+        let identificador:Identificadores = await Identificadores.findOne({
+            where: {
+                persona_id:{
+                    [Op.is]:null
+                }
+            }, order: [['id', 'ASC']]
+        }) as any;
+        if (!identificador) {
+          throw new Error('Identificador no disponible');
+        }
+        identificador.persona_id =persona.id;
+        identificador.save();
+      } catch (error) {
+        throw error;
+      }
+});
 export default Personas;
