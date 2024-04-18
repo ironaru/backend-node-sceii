@@ -115,6 +115,8 @@ Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Person
                 }
             }, order: [['id', 'ASC']]
         }) as any;
+        persona.nombres.toLowerCase();
+        persona.apellidos.toLowerCase();
         if (identificador==null || identificador == undefined) {
             throw new Error('Identificadores no disponibles');
         }

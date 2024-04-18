@@ -2,6 +2,8 @@ import express, { Express} from "express";
 import { sequelize } from "./db/database";
 import routerPersonas from "./routers/personas.router";
 import routerIdentificadores from "./routers/identificadores.router";
+import routerStartups from "./routers/startups.router";
+import routerAutores from "./routers/autores.router";
 const cors = require('cors')
 const app:Express = express();
 const port: number = 3000;
@@ -17,16 +19,17 @@ app.use(cors({
 // Routers
 app.use("/api/personas", routerPersonas);
 app.use("/api/identificadores", routerIdentificadores);
-
+app.use("/api/startups", routerStartups);
+app.use("/api/autores", routerAutores);
 async function main() {
-  try { 
+  try {
     await sequelize.sync({ force: false }); 
     console.log("Conexión establecida con la base de datos"); 
 
     app.listen(port, () => console.log("Escuchando en el puerto "+port));
-  } catch (error) {
+  } catch (error) { 
     console.error("Error al conectar con la base de datos", error);
-  } 
+  }
 }
 
 main();

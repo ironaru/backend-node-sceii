@@ -42,6 +42,4 @@ Identificadores.init({
     paranoid: true
 });
 
-
-
 export default Identificadores;

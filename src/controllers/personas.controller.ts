@@ -3,7 +3,6 @@ import Identificadores from "../models/identificadores";
 import express, { Express, Request, Response } from "express";
 const { Op } = require("sequelize");
 import {validationResult} from 'express-validator'
-import { PersonasDTO,getDatosIdentificador,getDatosPersona } from "../models/dto/personasDTO";
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
   

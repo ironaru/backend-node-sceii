@@ -19,8 +19,7 @@ const getIdentificadores = async (req: Request, res: Response) => {
             },
               order: [['id', 'ASC']] 
             }
-        )
-            .then((list: Identificadores[]) => {
+        ).then((list: Identificadores[]) => {
             identificadores = list
         });
         return res.status(200).json(identificadores);
@@ -44,5 +43,17 @@ const getIdentificador = async (req: Request, res: Response) => {
     }
 };
 
-
-export { getIdentificadores, getIdentificador };
+const deletePersonaFromIdentificador = async (req: Request, res: Response) => {
+    try {
+        const id: string = req.params.id;
+        let identificador: Identificadores = await Identificadores.findOne({ where: { id: id }, include: Personas }) as any;
+        const i = {...identificador}
+        identificador.persona_id = null as any;
+        identificador.save();
+        await Personas.destroy({where: { id: i.persona_id },force: true})
+        return res.status(200).json();
+    } catch (error:any) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+export { getIdentificadores, getIdentificador, deletePersonaFromIdentificador};
