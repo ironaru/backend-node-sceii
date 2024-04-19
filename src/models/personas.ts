@@ -1,38 +1,28 @@
-import { DataTypes, Model, Optional } from 'sequelize'
+import { CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute, Optional } from 'sequelize'
 import sequelize from '../db/database';
 import Identificadores from './identificadores';
+import Startups from './startups';
 const { Op } = require("sequelize");
-interface PersonasAtributos {
-    id: number;
-    nombres: string;
-    apellidos: string;
-    residencia: string;
-    correo: string;
-    organizacion: string;
-    ci: string;
-    plan: string;
-    celular: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-    deletedAt?: Date;
-}
 
-export interface PersonasInput extends Optional<PersonasAtributos, 'id'> { }
-export interface PersonasOutput extends Required<PersonasAtributos> { }
+class Personas extends Model<InferAttributes<Personas>, InferCreationAttributes<Personas>> {
+    declare id: CreationOptional<number>;
+    declare nombres: string;
+    declare apellidos: string;
+    declare residencia: string;
+    declare correo: string;
+    declare organizacion: string;
+    declare ci: string;
+    declare plan: string;
+    declare celular: string;
+    declare encuestado: boolean;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date>;
 
-class Personas extends Model<PersonasAtributos, PersonasInput> implements PersonasAtributos {
-    id!: number;
-    nombres!: string;
-    apellidos!: string;
-    residencia!: string;
-    correo!: string;
-    organizacion!: string;
-    ci!: string;
-    plan!: string;
-    celular!: string;
-    readonly createdAt!: Date;
-    readonly updatedAt!: Date;
-    readonly deletedAt!: Date;
+    declare startups?: NonAttribute<Startups[]>;
+    declare getStartups: HasManyGetAssociationsMixin<Startups>;
+    declare setStartups: HasManySetAssociationsMixin<Startups, number>;
+    declare countStartups: HasManyCountAssociationsMixin;
 }
 Personas.init({
     id: {
@@ -74,6 +64,11 @@ Personas.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    encuestado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -106,34 +101,41 @@ Identificadores.belongsTo(Personas, {
     targetKey: "id",
 }
 );
-Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Personas) => {
+// Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Personas) => {
+//     try {
+//         let identificador: Identificadores | null= await Identificadores.findOne({
+//             where: {
+//                 persona_id: {
+//                     [Op.is]: null
+//                 }
+//             }, order: [['id', 'ASC']]
+//         });
+//         if(persona.nombres == null) {
+//             persona.nombres = "";
+//         }
+//         if(persona.apellidos == null){
+//             persona.apellidos = "";
+//         }
+//         persona.encuestado = false;
+//         persona.nombres.toLowerCase();
+//         persona.apellidos.toLowerCase();
+//         if (identificador == null || identificador == undefined) {
+//             throw new Error('Identificadores no disponibles');
+//         }
+//     } catch (error) {
+//         throw error;
+//     }
+// });
+Personas.afterCreate("addQR", async (persona: Personas) => {
     try {
-        let identificador: Identificadores = await Identificadores.findOne({
+        var identificador: Identificadores | null = await Identificadores.findOne({
             where: {
                 persona_id: {
                     [Op.is]: null
                 }
             }, order: [['id', 'ASC']]
-        }) as any;
-        persona.nombres.toLowerCase();
-        persona.apellidos.toLowerCase();
-        if (identificador==null || identificador == undefined) {
-            throw new Error('Identificadores no disponibles');
-        }
-    } catch (error) {
-        throw error;
-    }
-});
-Personas.afterValidate("addQR", async (persona: Personas) => {
-    try {
-        var identificador: Identificadores = await Identificadores.findOne({
-            where: {
-                persona_id: {
-                    [Op.is]: null
-                }
-            }, order: [['id', 'ASC']]
-        }) as any;
-    if (identificador==null || identificador == undefined) {
+        });
+        if (identificador == null || identificador == undefined) {
             await Personas.destroy({
                 where: {
                     id: persona.id,
@@ -142,8 +144,10 @@ Personas.afterValidate("addQR", async (persona: Personas) => {
             });
             throw new Error('Identificadores no disponibles');
         }
-        identificador.persona_id = persona.id;
-        identificador.save();
+        identificador.persona_id = persona.id as number;
+        await identificador.save();
+        console.log(persona);
+        
     } catch (error) {
         throw error;
     }

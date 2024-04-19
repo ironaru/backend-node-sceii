@@ -1,6 +1,9 @@
 import express from "express";
-import { getStartups } from "../controllers/startups.controller";
+import { getStartups, postStartupsEncuesta, getResultadosStartups} from "../controllers/startups.controller";
 const routerStartups = express.Router();
 
 routerStartups.get('/', getStartups);
-export default routerStartups;
+routerStartups.post('/persona/:id', postStartupsEncuesta);
+routerStartups.get('/resultados', getResultadosStartups);
+
+export default routerStartups; 

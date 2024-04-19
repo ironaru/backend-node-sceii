@@ -2,10 +2,10 @@ import Personas from "../models/personas";
 import Identificadores from "../models/identificadores";
 import express, { Express, Request, Response } from "express";
 const { Op } = require("sequelize");
-import {validationResult} from 'express-validator'
+import { validationResult } from 'express-validator'
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
-  
+
   try {
     var personas: Personas[] = [];
     await Personas.findAll({
@@ -44,19 +44,37 @@ const getPersona = async (req: Request, res: Response) => {
 const postPersona = async (req: Request, res: Response) => {
   try {
     // let personaDTO: PersonasDTO = req.body as PersonasDTO;
-    let persona: Personas= req.body;
+    let persona: Personas = req.body;
     // let identificador:Identificadores = getDatosIdentificador(personaDTO);
     // const errors = validationResult(req)
     // if (!errors.isEmpty()) {
     //   return res.status(422).json({errors: errors.array()})
     // }
-    await Personas.create(persona).then((p: Personas) => {
-      persona = p;
+    let identificador: Identificadores | null = await Identificadores.findOne({
+      where: {
+        persona_id: {
+          [Op.is]: null
+        }
+      }, order: [['id', 'ASC']]
     });
+    if (persona.nombres == null) {
+      persona.nombres = "";
+    }
+    if (persona.apellidos == null) {
+      persona.apellidos = "";
+    }
+    persona.encuestado = false;
+    persona.nombres.toLowerCase();
+    persona.apellidos.toLowerCase();
+    if (identificador == null || identificador == undefined) {
+      return res.status(500).json({ message: 'Identificadores no disponibles' });
+    }
+
+    await Personas.create(persona);
     // let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
     // identificadorCreated.persona_id = persona.id
     // identificadorCreated.save();
-    return res.json(persona);
+    return res.status(200).json(persona);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
@@ -93,21 +111,21 @@ const deletePersonas = async (req: Request, res: Response) => {
   }
 }
 //Get persona by codigo_qr
-const getPersonaByQr =  async (req: Request, res: Response) => {
+const getPersonaByQr = async (req: Request, res: Response) => {
   var qr: string = req.params.qr;
   console.log(qr);
-  
-  try {
-    let identificador = await Identificadores.findOne({where:{codigo_qr:qr}});
 
-    if(identificador == null || identificador == undefined) {
-      return res.status(404).json({message:"Identificador QR no encontrado"})
+  try {
+    let identificador = await Identificadores.findOne({ where: { codigo_qr: qr } });
+
+    if (identificador == null || identificador == undefined) {
+      return res.status(404).json({ message: "Identificador QR no encontrado" })
     }
-    if(identificador.persona_id == null || identificador.persona_id == undefined) {
-      return res.status(404).json({message:"Identificador QR no asociado"})
+    if (identificador.persona_id == null || identificador.persona_id == undefined) {
+      return res.status(404).json({ message: "Identificador QR no asociado" })
     }
-    
-    let persona = await Personas.findOne({where:{id:identificador.persona_id}});
+
+    let persona = await Personas.findOne({ where: { id: identificador.persona_id } });
     return res.json(persona);
 
   } catch (error: any) {
@@ -115,4 +133,4 @@ const getPersonaByQr =  async (req: Request, res: Response) => {
   }
 }
 
-export { getPersonas, getPersona, postPersona, putPersonas, deletePersonas,getPersonaByQr };
+export { getPersonas, getPersona, postPersona, putPersonas, deletePersonas, getPersonaByQr };

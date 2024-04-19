@@ -1,27 +1,14 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, InferAttributes, InferCreationAttributes, Model, Optional } from "sequelize";
 import sequelize from '../db/database';
 
-interface AutoresAtributos {
-    id: number;
-    autor: string;
-    pais: string;
-    descripcion: string;
-    bibliografia: string;
-    tema: string;
-    foto:string;
-}
-
-export interface AutoresInput extends Optional<AutoresAtributos, "id"> { }
-export interface AutoresOutput extends Required<AutoresAtributos> { }
-
-class Autores extends Model<AutoresAtributos, AutoresOutput> implements AutoresAtributos {
-    id!: number;
-    autor!: string;
-    pais!: string;
-    descripcion!: string;
-    bibliografia!: string;
-    tema!: string;
-    foto!: string;
+class Autores extends Model<InferAttributes<Autores>, InferCreationAttributes<Autores>> {
+    declare id: number;
+    declare autor: string;
+    declare pais: string;
+    declare descripcion: string;
+    declare bibliografia: string;
+    declare tema: string;
+    declare foto: string;
 }
 Autores.init({
     id: {
@@ -38,30 +25,30 @@ Autores.init({
     },
     pais: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         field: "pais"
     },
     descripcion:{
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         field: "descripcion"
     },
     bibliografia:{
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         field: "bibliografia"
     },
     tema: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         field: "tema"
     },foto: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         field: "foto"
     }

@@ -21,9 +21,9 @@ app.use("/api/personas", routerPersonas);
 app.use("/api/identificadores", routerIdentificadores);
 app.use("/api/startups", routerStartups);
 app.use("/api/autores", routerAutores);
-async function main() {
+async function main() { 
   try {
-    await sequelize.sync({ force: false }); 
+    await sequelize.sync({ force: false}); 
     console.log("Conexión establecida con la base de datos"); 
 
     app.listen(port, () => console.log("Escuchando en el puerto "+port));

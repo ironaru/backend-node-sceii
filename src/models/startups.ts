@@ -1,18 +1,23 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import sequelize from '../db/database';
 import Personas from "./personas";
 
-interface StartupsAtributos {
-    id: number;
-    nombre: string;
-}
 
-export interface StartupsInput extends Optional<StartupsAtributos, "id"> { }
-export interface StartupsOutput extends Required<StartupsAtributos> { }
-
-class Startups extends Model<StartupsAtributos, StartupsInput> implements StartupsAtributos {
+export class StartupsResultados {
     id!: number;
     nombre!: string;
+    votos!: number | undefined;
+}
+class Startups extends Model<InferAttributes<Startups>, InferCreationAttributes<Startups>> {
+    declare id: number;
+    declare nombre: string;
+    declare foto: string;
+    declare descripcion: string;
+
+    declare Personas?: NonAttribute<Personas[]>;
+    declare getPersonas: HasManyGetAssociationsMixin<Personas>;
+    declare setPersonas: HasManySetAssociationsMixin<Personas, number>;
+    declare countPersonas: HasManyCountAssociationsMixin;
 }
 Startups.init({
     id: {
@@ -26,6 +31,18 @@ Startups.init({
         allowNull: false,
         unique: true,
         field: "nombre"
+    },
+    foto: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: false,
+        field: "foto"
+    },
+    descripcion: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: true,
+        field: "descripcion"
     }
 }, {
     timestamps: false,
@@ -35,7 +52,7 @@ Startups.init({
 });
 
 const Personas_Startups = sequelize.define('personas_startups', {}, { timestamps: false });
-Personas.belongsToMany(Startups, { foreignKey: 'persona_id',through: Personas_Startups });
-Startups.belongsToMany(Personas, { foreignKey: 'startup_id',through: Personas_Startups });
+Personas.belongsToMany(Startups, { foreignKey: 'persona_id', through: Personas_Startups });
+Startups.belongsToMany(Personas, { foreignKey: 'startup_id', through: Personas_Startups });
 
 export default Startups;
