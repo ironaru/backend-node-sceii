@@ -101,31 +101,7 @@ Identificadores.belongsTo(Personas, {
     targetKey: "id",
 }
 );
-// Personas.beforeCreate("verificarIdentificadorDisponible", async (persona: Personas) => {
-//     try {
-//         let identificador: Identificadores | null= await Identificadores.findOne({
-//             where: {
-//                 persona_id: {
-//                     [Op.is]: null
-//                 }
-//             }, order: [['id', 'ASC']]
-//         });
-//         if(persona.nombres == null) {
-//             persona.nombres = "";
-//         }
-//         if(persona.apellidos == null){
-//             persona.apellidos = "";
-//         }
-//         persona.encuestado = false;
-//         persona.nombres.toLowerCase();
-//         persona.apellidos.toLowerCase();
-//         if (identificador == null || identificador == undefined) {
-//             throw new Error('Identificadores no disponibles');
-//         }
-//     } catch (error) {
-//         throw error;
-//     }
-// });
+
 Personas.afterCreate("addQR", async (persona: Personas) => {
     try {
         var identificador: Identificadores | null = await Identificadores.findOne({
