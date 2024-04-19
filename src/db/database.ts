@@ -1,12 +1,12 @@
 import { Sequelize } from "sequelize";
 
-const PORT = 5456;
-const HOST = "127.0.0.1";
+const PORT = 18020;
+const HOST = "181.188.156.195";
 const DIALECT = "postgres";
 
-const NAME_DATABASE = "tarija_dialoga";
-const USER_DATABASE = "ronaru";
-const PASS_DATABASE = "@ronaru86iDP";
+const NAME_DATABASE = "tarijaDialogo";
+const USER_DATABASE = "xxxusxrdialogo";
+const PASS_DATABASE = "tarija2024";
 
 export const sequelize = new Sequelize(NAME_DATABASE, USER_DATABASE, PASS_DATABASE, {
     host: HOST,
