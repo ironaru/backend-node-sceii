@@ -1,10 +1,10 @@
 {
   "name": "sceii",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node --experimental-modules src/index.ts",
+    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "author": "",
