@@ -12,7 +12,7 @@ export const sequelize = new Sequelize(NAME_DATABASE, USER_DATABASE, PASS_DATABA
     host: HOST,
     port: PORT,
     dialect: DIALECT,
-    logging: true,
+    logging: false,
 });
 
 export default sequelize;
