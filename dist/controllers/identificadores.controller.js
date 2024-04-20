@@ -16,6 +16,8 @@ exports.deletePersonaFromIdentificador = exports.getIdentificador = exports.getI
 const identificadores_1 = __importDefault(require("../models/identificadores"));
 const personas_1 = __importDefault(require("../models/personas"));
 const { Op } = require("sequelize");
+require('dotenv').config();
+const private_key = process.env.JWT_KEY;
 const getIdentificadores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var identificadores = [];
