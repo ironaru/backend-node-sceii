@@ -7,7 +7,7 @@ node_modules
 .atom
 # testing
 /coverage
-.triggers.sql
+triggers.sql
 # production
 /build
 
