@@ -1,18 +1,10 @@
 import { Sequelize } from "sequelize";
 
-const PORT = 18020;
-const HOST = "181.188.156.195";
-const DIALECT = "postgres";
+require('dotenv').config();
 
-const NAME_DATABASE = "tarijaDialogo";
-const USER_DATABASE = "xxxusxrdialogo";
-const PASS_DATABASE = "tarija2024";
-
-export const sequelize = new Sequelize(NAME_DATABASE, USER_DATABASE, PASS_DATABASE, {
-    host: HOST,
-    port: PORT,
-    dialect: DIALECT,
-    logging: false,
+const databaseUrl = process.env.DATABASE_URL as string;
+export const sequelize = new Sequelize(databaseUrl,{
+    logging:false
 });
 
 export default sequelize;

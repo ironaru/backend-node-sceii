@@ -19,8 +19,9 @@ const identificadores_router_1 = __importDefault(require("./routers/identificado
 const startups_router_1 = __importDefault(require("./routers/startups.router"));
 const autores_router_1 = __importDefault(require("./routers/autores.router"));
 const cors = require('cors');
+require('dotenv').config();
 const app = (0, express_1.default)();
-const port = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 // Middleware
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
@@ -38,7 +39,7 @@ function main() {
         try {
             yield database_1.sequelize.sync({ force: false });
             console.log("Conexión establecida con la base de datos");
-            app.listen(port, () => console.log("Escuchando en el puerto " + port));
+            app.listen(PORT, () => console.log("Escuchando en el puerto " + PORT));
         }
         catch (error) {
             console.error("Error al conectar con la base de datos", error);
