@@ -27,7 +27,7 @@ app.use("/api/login",routerAuth);
 async function main() { 
 
   try {
-    await sequelize.sync({ force: true}); 
+    await sequelize.sync({ force: false}); 
     console.log("Conexión establecida con la base de datos"); 
 
     app.listen(port, () => console.log("Escuchando en el puerto "+port));
