@@ -5,13 +5,11 @@ import routerIdentificadores from "./routers/identificadores.router";
 import routerStartups from "./routers/startups.router";
 import routerAutores from "./routers/autores.router";
 import routerAuth from "./routers/auth.router";
-const cors = require('cors')
+const cors = require('cors');
 require('dotenv').config();
 const app:Express = express();
 
 const port = Number(process.env.PORT) || 3000;
-const password = process.env.PASSWORD as string;
-
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -25,7 +23,7 @@ app.use("/api/personas", routerPersonas);
 app.use("/api/identificadores", routerIdentificadores);
 app.use("/api/startups", routerStartups);
 app.use("/api/autores", routerAutores);
-app.use("/api/auth",routerAuth);
+app.use("/api/login",routerAuth);
 async function main() { 
 
   try {
