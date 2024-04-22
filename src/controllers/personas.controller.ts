@@ -64,17 +64,28 @@ const postPersona = async (req: Request, res: Response) => {
       persona.apellidos = "";
     }
     persona.encuestado = false;
-    persona.nombres.toLowerCase();
-    persona.apellidos.toLowerCase();
+    persona.nombres?.toUpperCase();
+    persona.apellidos?.toUpperCase();
+    
     if (identificador == null || identificador == undefined) {
       return res.status(500).json({ message: 'Identificadores no disponibles' });
     }
+    let personSearch = await Personas.findOne({where:{ci:persona.ci}});
+    if(personSearch == null) {
+      return res.status(500).json({ message: 'El ci ya está siendo utilizado' });
+    }
+    persona = await Personas.create(persona);
+    
+    identificador.persona_id = persona.id as number;
 
-    await Personas.create(persona);
+    await identificador.save();
+
+ 
+    
     // let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
     // identificadorCreated.persona_id = persona.id
     // identificadorCreated.save();
-    return res.status(200).json(persona);
+    return res.status(200).json(identificador);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
