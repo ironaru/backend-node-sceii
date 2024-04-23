@@ -4,9 +4,7 @@ import Personas from "../models/personas";
 import { Identificador } from "../models/dto/Identificador";
 const { Op } = require("sequelize");
 require('dotenv').config();
-import * as jwt from 'jsonwebtoken'
 
-const private_key = process.env.JWT_KEY as string;
 const getIdentificadores = async (req: Request, res: Response) => {
 
     try {
@@ -36,7 +34,6 @@ const getIdentificador = async (req: Request, res: Response) => {
     try {
         var id: string = req.params.id;
         var identificador: Identificadores = await Identificadores.findOne({ where: { id: id }, include: Personas }) as any;
-
         if (identificador == undefined || identificador == null) {
             return res.status(404).json({ message: 'Identificador no encontrado' });
         }
@@ -51,11 +48,13 @@ const getIdentificador = async (req: Request, res: Response) => {
 const deletePersonaFromIdentificador = async (req: Request, res: Response) => {
     try {
         const id: string = req.params.id;
-        let identificador: Identificadores = await Identificadores.findOne({ where: { id: id }, include: Personas }) as any;
-        const i = { ...identificador }
+        let identificador: Identificadores = await Identificadores.findOne({ where: { id: id }, include: Personas }) as Identificadores;
+
+        const persona_id = identificador.persona_id;
         identificador.persona_id = null as any;
         identificador.save();
-        await Personas.destroy({ where: { id: i.persona_id }, force: true })
+        let persona = await Personas.findOne({ where: { id: persona_id }});
+        persona?.destroy();
         return res.status(200).json();
     } catch (error: any) {
         return res.status(500).json({ message: error.message });

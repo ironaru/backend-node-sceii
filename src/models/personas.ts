@@ -19,13 +19,13 @@ class Personas extends Model<InferAttributes<Personas>, InferCreationAttributes<
     declare updatedAt: CreationOptional<Date>;
     declare deletedAt: CreationOptional<Date>;
 
-    
     declare getIdentificador: HasOneGetAssociationMixin<Identificadores>;
     declare startups?: NonAttribute<Startups[]>;
     declare getStartups: HasManyGetAssociationsMixin<Startups>;
     declare setStartups: HasManySetAssociationsMixin<Startups, number>;
     declare countStartups: HasManyCountAssociationsMixin;
 }
+
 Personas.init({
     id: {
         type: DataTypes.INTEGER,

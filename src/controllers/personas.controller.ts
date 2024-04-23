@@ -2,6 +2,7 @@ import Personas from "../models/personas";
 import Identificadores from "../models/identificadores";
 import express, { Express, Request, Response } from "express";
 const { Op } = require("sequelize");
+import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { validationResult } from 'express-validator'
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
@@ -71,7 +72,7 @@ const postPersona = async (req: Request, res: Response) => {
       return res.status(500).json({ message: 'Identificadores no disponibles' });
     }
     let personSearch = await Personas.findOne({where:{ci:persona.ci}});
-    if(personSearch == null) {
+    if(personSearch != null) {
       return res.status(500).json({ message: 'El ci ya está siendo utilizado' });
     }
     persona = await Personas.create(persona);
@@ -123,9 +124,7 @@ const deletePersonas = async (req: Request, res: Response) => {
 }
 //Get persona by codigo_qr
 const getPersonaByQr = async (req: Request, res: Response) => {
-  var qr: string = req.params.qr;
-  console.log(qr);
-
+  const qr: string = req.params.qr;
   try {
     let identificador = await Identificadores.findOne({ where: { codigo_qr: qr } });
 
@@ -138,6 +137,7 @@ const getPersonaByQr = async (req: Request, res: Response) => {
 
     let persona = await Personas.findOne({ where: { id: identificador.persona_id } });
     return res.json(persona);
+
 
   } catch (error: any) {
     return res.status(500).json({ message: error.message });

@@ -5,6 +5,7 @@ import routerIdentificadores from "./routers/identificadores.router";
 import routerStartups from "./routers/startups.router";
 import routerAutores from "./routers/autores.router";
 import routerAuth from "./routers/auth.router";
+import routerSugerencias from "./routers/sugerencias.router";
 const cors = require('cors');
 require('dotenv').config();
 const app:Express = express();
@@ -24,6 +25,7 @@ app.use("/api/identificadores", routerIdentificadores);
 app.use("/api/startups", routerStartups);
 app.use("/api/autores", routerAutores);
 app.use("/api/login",routerAuth);
+app.use("/api/sugerencias",routerSugerencias);
 async function main() { 
 
   try {

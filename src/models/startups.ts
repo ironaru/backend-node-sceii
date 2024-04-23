@@ -8,12 +8,13 @@ export class StartupsResultados {
     nombre!: string;
     votos!: number | undefined;
 }
+
 class Startups extends Model<InferAttributes<Startups>, InferCreationAttributes<Startups>> {
     declare id: number;
     declare nombre: string;
     declare foto: string;
     declare descripcion: string;
-
+    declare fecha: Date;
     declare Personas?: NonAttribute<Personas[]>;
     declare getPersonas: HasManyGetAssociationsMixin<Personas>;
     declare setPersonas: HasManySetAssociationsMixin<Personas, number>;
@@ -43,6 +44,10 @@ Startups.init({
         allowNull: true,
         unique: true,
         field: "descripcion"
+    },
+    fecha:{
+        type: DataTypes.DATE,
+        defaultValue: Date.now(),
     }
 }, {
     timestamps: false,
@@ -51,7 +56,13 @@ Startups.init({
     paranoid: true
 });
 
-const Personas_Startups = sequelize.define('personas_startups', {}, { timestamps: false });
+const Personas_Startups = sequelize.define('personas_startups', {
+    // opcion: {
+    //     type: DataTypes.INTEGER,
+    //     primaryKey: false,
+    //     allowNull: true,
+    // },
+}, { timestamps: false });
 Personas.belongsToMany(Startups, { foreignKey: 'persona_id', through: Personas_Startups });
 Startups.belongsToMany(Personas, { foreignKey: 'startup_id', through: Personas_Startups });
 
