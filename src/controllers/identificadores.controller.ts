@@ -30,6 +30,31 @@ const getIdentificadores = async (req: Request, res: Response) => {
     }
 
 };
+const getIdentificadoresVacias = async (req: Request, res: Response) => {
+
+    try {
+        var identificadores: Identificadores[] = [];
+        await Identificadores.findAll(
+            {
+                where: {
+                    persona_id: {
+                        [Op.is]: null,
+                    }
+                },
+                include: {
+                    model: Personas,
+                },
+                order: [['id', 'ASC']]
+            }
+        ).then((list: Identificadores[]) => {
+            identificadores = list
+        });
+        return res.status(200).json(identificadores);
+    } catch (error: any) {
+        return res.status(500).json({ message: error.message });
+    }
+
+};
 const getIdentificador = async (req: Request, res: Response) => {
     try {
         var id: string = req.params.id;
@@ -60,4 +85,4 @@ const deletePersonaFromIdentificador = async (req: Request, res: Response) => {
         return res.status(500).json({ message: error.message });
     }
 };
-export { getIdentificadores, getIdentificador, deletePersonaFromIdentificador};
+export { getIdentificadores, getIdentificador, deletePersonaFromIdentificador,getIdentificadoresVacias};

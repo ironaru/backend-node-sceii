@@ -20,12 +20,13 @@ app.use(cors({
 }));
 
 // Routers
+app.use("/api/sugerencias",routerSugerencias); 
 app.use("/api/personas", routerPersonas);
 app.use("/api/identificadores", routerIdentificadores);
 app.use("/api/startups", routerStartups);
 app.use("/api/autores", routerAutores);
 app.use("/api/login",routerAuth);
-app.use("/api/sugerencias",routerSugerencias);
+
 async function main() { 
 
   try {

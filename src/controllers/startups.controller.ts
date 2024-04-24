@@ -1,11 +1,11 @@
 import express, { Express, Request, Response } from "express";
-import Startups, { StartupsResultados } from "../models/startups";
+import Startups, {StartupsResultados } from "../models/startups";
 import Personas from "../models/personas";
 const { Op } = require("sequelize");
 
 const getStartups = async (req: Request, res: Response) => {
     try {
-        let startups: Startups[] = [];
+        let startups: any[] = [];
         await Startups.findAll({ 
             order: [['id', 'ASC']],
             where: { 
@@ -13,7 +13,7 @@ const getStartups = async (req: Request, res: Response) => {
                     [Op.eq]: Date.now()
                 }
             } 
-        }).then((t: Startups[]) => {
+        }).then((t: any[]) => {
             startups = t;
         });
         res.status(200).json(startups);
@@ -29,11 +29,12 @@ const postStartupsEncuesta = async (req: Request, res: Response) => {
         if (persona == null || persona === undefined) {
             return res.status(404).json({ message: 'Persona no encontrada' });
         }
-
+        // const startups: Startup[] = req.body;
         const startups: number[] = req.body;
         if (persona.encuestado == true) {
             return res.status(201).json({ message: 'Persona encuestada' });
         } else {
+
             persona.setStartups(startups);
             await persona.save();
             return res.status(200).json();

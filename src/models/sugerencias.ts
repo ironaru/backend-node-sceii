@@ -1,17 +1,17 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import sequelize from "../db/database";
 import Personas from "./personas";
 
 class Sugerencias extends Model<InferAttributes<Sugerencias>, InferCreationAttributes<Sugerencias>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare sugerencia: string;
-    declare persona_id: string | null;
+    declare persona_id: string;
 }
 Sugerencias.init({
     id: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        type: DataTypes.NUMBER,
-        autoIncrement: true
+        autoIncrement: true,
 
     },
     sugerencia: {
@@ -19,21 +19,21 @@ Sugerencias.init({
         allowNull: false,
     },
     persona_id: {
-        type: DataTypes.NUMBER,
-        allowNull: false,
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }
 }
-    , {
-        tableName: "personas",
-        timestamps: true,
-        sequelize: sequelize,
-        paranoid: true
-    });
-Personas.hasOne(Sugerencias, {
+, {
+    tableName: "sugerencias",
+    timestamps: false,
+    sequelize: sequelize,
+    paranoid: true
+});
+
+Personas.hasMany(Sugerencias, {
     foreignKey: "persona_id",
     sourceKey: "id",
 });
-
 Sugerencias.belongsTo(Personas, {
     foreignKey: "persona_id",
     targetKey: "id",

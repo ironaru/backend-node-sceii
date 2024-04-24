@@ -16,8 +16,12 @@ const getSugerencias = async (req: Request, res: Response) =>{
 };
 const postSugerencias = async (req: Request, res: Response) =>{
     try {
-        const sugerenciaReq: Sugerencias = req.body;
+        let sugerenciaReq: Sugerencias = req.body;
         const persona_id = req.params.id;
+        sugerenciaReq.id = null as any;
+        sugerenciaReq.persona_id = Number(persona_id) as any;
+        console.log(sugerenciaReq);
+        
         if(persona_id == null){
             return res.status(404).json({ message:'Persona no encontrada' });
         }

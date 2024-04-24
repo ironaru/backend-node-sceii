@@ -2,6 +2,7 @@ import { CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManyGetA
 import sequelize from '../db/database';
 import Identificadores from './identificadores';
 import Startups from './startups';
+import Sugerencias from './sugerencias';
 const { Op } = require("sequelize");
 
 class Personas extends Model<InferAttributes<Personas>, InferCreationAttributes<Personas>> {
@@ -104,30 +105,5 @@ Identificadores.belongsTo(Personas, {
 }
 );
 
-// Personas.afterCreate("addQR", async (persona: Personas) => {
-//     try {
-//         var identificador: Identificadores | null = await Identificadores.findOne({
-//             where: {
-//                 persona_id: {
-//                     [Op.is]: null
-//                 }
-//             }, order: [['id', 'ASC']]
-//         });
-//         if (identificador == null || identificador == undefined) {
-//             await Personas.destroy({
-//                 where: {
-//                     id: persona.id,
-//                 },
-//                 force: true,
-//             });
-//             throw new Error('Identificadores no disponibles');
-//         }
-//         identificador.persona_id = persona.id as number;
-//         await identificador.save();
-//         console.log(persona);
-        
-//     } catch (error) {
-//         throw error;
-//     }
-// });
+
 export default Personas;

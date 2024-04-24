@@ -57,13 +57,14 @@ Startups.init({
 });
 
 const Personas_Startups = sequelize.define('personas_startups', {
-    // opcion: {
-    //     type: DataTypes.INTEGER,
-    //     primaryKey: false,
-    //     allowNull: true,
-    // },
+    opcion: {
+        type: DataTypes.INTEGER,
+        primaryKey: false,
+        allowNull: true,
+    },
 }, { timestamps: false });
-Personas.belongsToMany(Startups, { foreignKey: 'persona_id', through: Personas_Startups });
+
 Startups.belongsToMany(Personas, { foreignKey: 'startup_id', through: Personas_Startups });
+Personas.belongsToMany(Startups, { foreignKey: 'persona_id', through: Personas_Startups });
 
 export default Startups;
