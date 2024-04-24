@@ -1,7 +1,7 @@
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, Optional } from "sequelize";
 import sequelize from '../db/database';
 
-class Autores extends Model<InferAttributes<Autores>, InferCreationAttributes<Autores>> {
+class Expositores extends Model<InferAttributes<Expositores>, InferCreationAttributes<Expositores>> {
     declare id: number;
     declare autor: string;
     declare pais: string;
@@ -10,7 +10,7 @@ class Autores extends Model<InferAttributes<Autores>, InferCreationAttributes<Au
     declare tema: string;
     declare foto: string;
 }
-Autores.init({
+Expositores.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -55,10 +55,10 @@ Autores.init({
 
 }, {
     timestamps: false,
-    tableName: 'autores',
+    tableName: 'expositores',
     sequelize: sequelize,
     paranoid: true
 });
 
 
-export default Autores;
+export default Expositores;

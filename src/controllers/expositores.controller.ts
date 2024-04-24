@@ -1,11 +1,10 @@
 import express, { Express, Request, Response } from "express";
-const { Op } = require("sequelize");
-import Autores from "../models/autores";
+import Expositores from "../models/expositores";
 
-const getAutores = async (req: Request, res: Response) => {
+const getExpositores = async (req: Request, res: Response) => {
     try {
-        let autores: Autores[] = [];
-        await Autores.findAll().then((list:Autores[]) => {
+        let autores: Expositores[] = [];
+        await Expositores.findAll().then((list:Expositores[]) => {
             autores = list;
         });
         return res.json(autores);
@@ -14,10 +13,10 @@ const getAutores = async (req: Request, res: Response) => {
     }
 };
 
-const getAutor = async (req: Request, res: Response) => {
+const getExpositor = async (req: Request, res: Response) => {
     try{
         var id: string = req.params.id;
-        var autor: Autores = await Autores.findOne({ where: { id: id } }) as any;
+        var autor: Expositores = await Expositores.findOne({ where: { id: id } }) as any;
         if (autor == undefined || autor == null) {
             return res.status(404).json({ message: 'Autor no encontrado' });
         }
@@ -27,4 +26,4 @@ const getAutor = async (req: Request, res: Response) => {
     }
 }
 
-export {getAutores, getAutor};
+export {getExpositores, getExpositor};

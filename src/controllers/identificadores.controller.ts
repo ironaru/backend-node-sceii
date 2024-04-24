@@ -17,9 +17,11 @@ const getIdentificadores = async (req: Request, res: Response) => {
                     }
                 },
                 include: {
-                    model: Personas,
+                    model: Personas
                 },
-                order: [['id', 'ASC']]
+                order: [
+                    ['id', 'ASC']
+                ]
             }
         ).then((list: Identificadores[]) => {
             identificadores = list

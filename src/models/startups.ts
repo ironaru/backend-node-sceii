@@ -1,12 +1,17 @@
 import { DataTypes, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import sequelize from '../db/database';
 import Personas from "./personas";
+import Personas_Startups from "./personas_startups";
 
 
 export class StartupsResultados {
     id!: number;
     nombre!: string;
-    votos!: number | undefined;
+    votos_totales: Votos[] = [];
+}
+class Votos{
+    declare opcion:number;
+    total:number = 0;
 }
 
 class Startups extends Model<InferAttributes<Startups>, InferCreationAttributes<Startups>> {
@@ -46,7 +51,7 @@ Startups.init({
         field: "descripcion"
     },
     fecha:{
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         defaultValue: Date.now(),
     }
 }, {
@@ -56,15 +61,22 @@ Startups.init({
     paranoid: true
 });
 
-const Personas_Startups = sequelize.define('personas_startups', {
-    opcion: {
-        type: DataTypes.INTEGER,
-        primaryKey: false,
-        allowNull: true,
-    },
-}, { timestamps: false });
+Personas.hasMany(Personas_Startups,{
+    foreignKey: "persona_id",
+    sourceKey: "id",
+});
+Personas_Startups.belongsTo(Personas, {
+    foreignKey: "persona_id",
+    targetKey: "id",
+});
 
-Startups.belongsToMany(Personas, { foreignKey: 'startup_id', through: Personas_Startups });
-Personas.belongsToMany(Startups, { foreignKey: 'persona_id', through: Personas_Startups });
+Startups.hasMany(Personas_Startups,{
+    foreignKey: "startup_id",
+    sourceKey: "id",
+});
+Personas_Startups.belongsTo(Startups, {
+    foreignKey: "startup_id",
+    targetKey: "id",
+});
 
 export default Startups;
