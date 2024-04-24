@@ -44,13 +44,7 @@ const getPersona = async (req: Request, res: Response) => {
 // post personas
 const postPersona = async (req: Request, res: Response) => {
   try {
-    // let personaDTO: PersonasDTO = req.body as PersonasDTO;
     let persona: Personas = req.body;
-    // let identificador:Identificadores = getDatosIdentificador(personaDTO);
-    // const errors = validationResult(req)
-    // if (!errors.isEmpty()) {
-    //   return res.status(422).json({errors: errors.array()})
-    // }
     let identificador: Identificadores | null = await Identificadores.findOne({
       where: {
         persona_id: {
@@ -65,29 +59,19 @@ const postPersona = async (req: Request, res: Response) => {
       persona.apellidos = "";
     }
     persona.encuestado = false;
-    persona.nombres?.toUpperCase();
-    persona.apellidos?.toUpperCase();
-    persona.celular == null ? persona.celular = "" : persona.celular;
-    persona.correo == null ? persona.correo = "" : persona.correo;
-    persona.organizacion == null ? persona.organizacion = "" : persona.organizacion;
+    persona.nombres.toUpperCase();
+    persona.ci == '' ? persona.ci = null as any : persona.ci;
+    
     if (identificador == null || identificador == undefined) {
       return res.status(500).json({ message: 'Identificadores no disponibles' });
     }
-    let personSearch = await Personas.findOne({ where: { ci: persona.ci } });
-    if (personSearch != null) {
-      return res.status(500).json({ message: 'El ci ya está siendo utilizado' });
-    }
+
     persona = await Personas.create(persona);
 
-    identificador.persona_id = persona.id as number;
+    identificador.persona_id = persona.id;
 
     await identificador.save();
 
-
-
-    // let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
-    // identificadorCreated.persona_id = persona.id
-    // identificadorCreated.save();
     return res.status(200).json(identificador);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
@@ -98,20 +82,17 @@ const postPersona = async (req: Request, res: Response) => {
 const putPersonas = async (req: Request, res: Response) => {
   let persona: Personas = req.body;
   const id: string = req.params.id;
-  persona.nombres?.toUpperCase();
-  persona.apellidos?.toUpperCase();
-  persona.celular == null ? persona.celular = "" : persona.celular;
-  persona.correo == null ? persona.correo = "" : persona.correo;
-  persona.organizacion == null ? persona.organizacion = "" : persona.organizacion;
+  persona.nombres.toUpperCase();
+  persona.ci == '' ? persona.ci = null as any : persona.ci;
   try {
     await Personas.update(persona, {
       where: {
         id: id
       }
     });
-    if (persona == undefined || persona == null) {
-      return res.status(404).json({ message: 'Persona no encontrada' });
-    }
+    // if (persona == undefined || persona == null) {
+    //   return res.status(404).json({ message: 'Persona no encontrada' });
+    // }
     persona = await Personas.findOne({ where: { id: id } }) as any;
     return res.json(persona);
   } catch (error: any) {
@@ -124,7 +105,12 @@ const deletePersonas = async (req: Request, res: Response) => {
   var id: string = req.params.id;
   try {
     await Personas.findByPk(id);
-    return res.json(Personas.destroy({ where: { id: id } }));
+    Personas.destroy({ 
+      where: { 
+        id: id 
+      },force: true
+    });
+    return res.status(200).json();
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }

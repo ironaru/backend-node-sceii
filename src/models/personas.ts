@@ -44,20 +44,20 @@ Personas.init({
     },
     residencia: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     correo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false
     },
     organizacion: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     ci: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true
     },
     plan: {
@@ -66,7 +66,7 @@ Personas.init({
     },
     celular: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     encuestado: {
         type: DataTypes.BOOLEAN,
