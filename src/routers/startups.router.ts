@@ -5,6 +5,6 @@ const routerStartups = express.Router();
 
 routerStartups.get('/', authIdentificador, getStartups);
 routerStartups.post('/persona/:id', authIdentificador, postStartupsEncuesta);
-routerStartups.get('/resultados',authUsuario, getResultadosStartups);
+routerStartups.get('/resultados', getResultadosStartups);
 
 export default routerStartups; 

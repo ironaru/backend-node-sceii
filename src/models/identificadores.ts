@@ -12,6 +12,7 @@ Identificadores.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true
     },
     codigo_qr: {
         type: DataTypes.STRING,

@@ -2,6 +2,7 @@ import { CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManyGetA
 import sequelize from '../db/database';
 import Identificadores from './identificadores';
 import Startups from './startups';
+import Sugerencias from './sugerencias';
 const { Op } = require("sequelize");
 
 class Personas extends Model<InferAttributes<Personas>, InferCreationAttributes<Personas>> {
@@ -19,18 +20,19 @@ class Personas extends Model<InferAttributes<Personas>, InferCreationAttributes<
     declare updatedAt: CreationOptional<Date>;
     declare deletedAt: CreationOptional<Date>;
 
-    
     declare getIdentificador: HasOneGetAssociationMixin<Identificadores>;
     declare startups?: NonAttribute<Startups[]>;
     declare getStartups: HasManyGetAssociationsMixin<Startups>;
     declare setStartups: HasManySetAssociationsMixin<Startups, number>;
     declare countStartups: HasManyCountAssociationsMixin;
 }
+
 Personas.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true
     },
     nombres: {
         type: DataTypes.STRING,
@@ -104,30 +106,5 @@ Identificadores.belongsTo(Personas, {
 }
 );
 
-// Personas.afterCreate("addQR", async (persona: Personas) => {
-//     try {
-//         var identificador: Identificadores | null = await Identificadores.findOne({
-//             where: {
-//                 persona_id: {
-//                     [Op.is]: null
-//                 }
-//             }, order: [['id', 'ASC']]
-//         });
-//         if (identificador == null || identificador == undefined) {
-//             await Personas.destroy({
-//                 where: {
-//                     id: persona.id,
-//                 },
-//                 force: true,
-//             });
-//             throw new Error('Identificadores no disponibles');
-//         }
-//         identificador.persona_id = persona.id as number;
-//         await identificador.save();
-//         console.log(persona);
-        
-//     } catch (error) {
-//         throw error;
-//     }
-// });
+
 export default Personas;

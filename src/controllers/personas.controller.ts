@@ -2,6 +2,7 @@ import Personas from "../models/personas";
 import Identificadores from "../models/identificadores";
 import express, { Express, Request, Response } from "express";
 const { Op } = require("sequelize");
+import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { validationResult } from 'express-validator'
 // obtener todos las personas
 const getPersonas = async (req: Request, res: Response) => {
@@ -66,22 +67,24 @@ const postPersona = async (req: Request, res: Response) => {
     persona.encuestado = false;
     persona.nombres?.toUpperCase();
     persona.apellidos?.toUpperCase();
-    
+    persona.celular == null ? persona.celular = "" : persona.celular;
+    persona.correo == null ? persona.correo = "" : persona.correo;
+    persona.organizacion == null ? persona.organizacion = "" : persona.organizacion;
     if (identificador == null || identificador == undefined) {
       return res.status(500).json({ message: 'Identificadores no disponibles' });
     }
-    let personSearch = await Personas.findOne({where:{ci:persona.ci}});
-    if(personSearch == null) {
+    let personSearch = await Personas.findOne({ where: { ci: persona.ci } });
+    if (personSearch != null) {
       return res.status(500).json({ message: 'El ci ya está siendo utilizado' });
     }
     persona = await Personas.create(persona);
-    
+
     identificador.persona_id = persona.id as number;
 
     await identificador.save();
 
- 
-    
+
+
     // let identificadorCreated =  await Identificadores.create(identificador,{include:[Personas]});
     // identificadorCreated.persona_id = persona.id
     // identificadorCreated.save();
@@ -93,8 +96,13 @@ const postPersona = async (req: Request, res: Response) => {
 
 // put personas
 const putPersonas = async (req: Request, res: Response) => {
-  var persona: Personas = req.body;
-  var id: string = req.params.id;
+  let persona: Personas = req.body;
+  const id: string = req.params.id;
+  persona.nombres?.toUpperCase();
+  persona.apellidos?.toUpperCase();
+  persona.celular == null ? persona.celular = "" : persona.celular;
+  persona.correo == null ? persona.correo = "" : persona.correo;
+  persona.organizacion == null ? persona.organizacion = "" : persona.organizacion;
   try {
     await Personas.update(persona, {
       where: {
@@ -121,11 +129,10 @@ const deletePersonas = async (req: Request, res: Response) => {
     return res.status(500).json({ message: error.message });
   }
 }
+
 //Get persona by codigo_qr
 const getPersonaByQr = async (req: Request, res: Response) => {
-  var qr: string = req.params.qr;
-  console.log(qr);
-
+  const qr: string = req.params.qr;
   try {
     let identificador = await Identificadores.findOne({ where: { codigo_qr: qr } });
 
@@ -138,6 +145,7 @@ const getPersonaByQr = async (req: Request, res: Response) => {
 
     let persona = await Personas.findOne({ where: { id: identificador.persona_id } });
     return res.json(persona);
+
 
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
