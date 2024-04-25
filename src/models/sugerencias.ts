@@ -12,6 +12,7 @@ Sugerencias.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true
 
     },
     sugerencia: {

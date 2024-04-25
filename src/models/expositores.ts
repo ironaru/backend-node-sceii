@@ -15,6 +15,7 @@ Expositores.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true,
         field: "id"
     },
     autor: {

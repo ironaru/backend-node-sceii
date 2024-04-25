@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import Startups, {StartupsResultados } from "../models/startups";
+import Startups, { StartupsResultados, Votos } from "../models/startups";
 import Personas_Startups, { Personas_StartupsDTO } from "../models/personas_startups";
 import Personas from "../models/personas";
 const { Op } = require("sequelize");
@@ -7,10 +7,10 @@ const { Op } = require("sequelize");
 const getStartups = async (req: Request, res: Response) => {
     try {
         let startups: any[] = [];
-        await Startups.findAll({ 
+        await Startups.findAll({
             order: [['id', 'ASC']],
-            where: { 
-                fecha: { 
+            where: {
+                fecha: {
                     [Op.eq]: Date.now()
                 }
             }
@@ -55,8 +55,6 @@ const postStartupsEncuesta = async (req: Request, res: Response) => {
         }
 
     } catch (error: any) {
-        console.log({ message: error.message });
-
         return res.status(500).json({ message: error.message });
     }
 };
@@ -64,26 +62,55 @@ const postStartupsEncuesta = async (req: Request, res: Response) => {
 
 const getResultadosStartups = async (req: Request, res: Response) => {
     try {
-        let resultados: StartupsResultados[] = [];
-        let startups: Personas_Startups[] = [];
-        await Personas_Startups.findAll({include:[Startups]}).then((list)=>{
-            startups = list
-        });
-        // await Startups.findAll({ include: [Personas] }).then((list: Startups[]) => {
-        //     startups = list;
-        // });
-        // startups.forEach(async (startup: Startups) => {
-        //     startup.Personas = startup.Personas as any;
-        //     if (startup.Personas == undefined) {
-        //         startup.Personas = [];
-        //     }
-        //     const startupResult: StartupsResultados = { id: startup.id, nombre: startup.nombre, votos: startup.Personas.length };
-        //     resultados.push(startupResult);
-        // });
+        let resultados = await resultadosStartups();
+        while (resultados.length > 2) {
+            resultados.pop();
+        }
         return res.status(200).json(resultados);
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }
+
+}
+export async function resultadosStartups() : Promise<StartupsResultados[]>{
+    let resultados: StartupsResultados[] = [];
+    let startups: Startups[] = [];
+    await Startups.findAll().then((list: Startups[]) => {
+        startups = list;
+    });
+    const opciones: Set<number> = new Set();
+    for (const i of startups) {
+        let fecha = new Date();
+        const fechaStr = fecha.toJSON().split("T")[0];
+        if (fechaStr != i.fecha as any) {
+            continue;
+        }
+        let sR: StartupsResultados = new StartupsResultados();
+        sR.id = i.id;
+        sR.nombre = i.nombre;
+        sR.foto = i.foto;
+        sR.descripcion = i.descripcion;
+        let startupVotos = await Personas_Startups.findAll({ where: { startup_id: i.id } }) as Personas_Startups[];
+        for (const s of startupVotos) {
+            opciones.add(s.opcion);
+        }
+        for (const o of opciones) {
+            let votos = new Votos();
+            votos.opcion = o;
+            votos.total = await Personas_Startups.count({ where: { opcion: votos.opcion, startup_id: sR.id } });
+            if (votos.opcion === 1) {
+                sR.totales_afirmativos = votos.total
+            }
+            sR.votos_totales.push(votos);
+        }
+
+        resultados.push(sR)
+    }
+    resultados.sort((a, b) => {
+        return b.totales_afirmativos - a.totales_afirmativos;
+    });
+    
+    return resultados;
 }
 
 export { getStartups, postStartupsEncuesta, getResultadosStartups };

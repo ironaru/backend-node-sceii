@@ -32,6 +32,7 @@ Personas.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true
     },
     nombres: {
         type: DataTypes.STRING,

@@ -5,7 +5,6 @@ import Personas from '../models/personas';
 import { Usuario } from '../models/dto/Usuario';
 import * as bcrypt from 'bcrypt';
 import { Identificador } from '../models/dto/Identificador';
-import { log } from 'console';
 require('dotenv').config();
 const private_key = process.env.JWT_KEY as string;
 const username = process.env.USER as string;

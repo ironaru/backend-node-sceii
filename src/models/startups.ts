@@ -1,4 +1,4 @@
-import { DataTypes, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
+import { CreationOptional, DataTypes, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import sequelize from '../db/database';
 import Personas from "./personas";
 import Personas_Startups from "./personas_startups";
@@ -7,15 +7,18 @@ import Personas_Startups from "./personas_startups";
 export class StartupsResultados {
     id!: number;
     nombre!: string;
+    foto: string = "";
+    descripcion: string = "";
+    totales_afirmativos: number = 0;
     votos_totales: Votos[] = [];
 }
-class Votos{
+export class Votos{
     declare opcion:number;
     total:number = 0;
 }
 
 class Startups extends Model<InferAttributes<Startups>, InferCreationAttributes<Startups>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare nombre: string;
     declare foto: string;
     declare descripcion: string;
@@ -30,24 +33,22 @@ Startups.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        autoIncrementIdentity:true,
         field: "id"
     },
     nombre: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         field: "nombre"
     },
     foto: {
         type: DataTypes.TEXT,
         allowNull: true,
-        unique: false,
         field: "foto"
     },
     descripcion: {
         type: DataTypes.TEXT,
         allowNull: true,
-        unique: true,
         field: "descripcion"
     },
     fecha:{

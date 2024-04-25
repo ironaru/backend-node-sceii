@@ -21,6 +21,7 @@ Personas_Startups.init({
         primaryKey: true,
         autoIncrement:true,
         allowNull:false,
+        autoIncrementIdentity:true
     },
     persona_id:{
         type: DataTypes.INTEGER,

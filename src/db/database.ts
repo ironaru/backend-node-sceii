@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const databaseUrl = process.env.DATABASE_URL as string;
 export const sequelize = new Sequelize(databaseUrl,{
-    logging:true
+    logging:false
 });
 
 export default sequelize;
