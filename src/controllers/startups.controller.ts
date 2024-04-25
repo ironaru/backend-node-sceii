@@ -2,16 +2,18 @@ import express, { Express, Request, Response } from "express";
 import Startups, { StartupsResultados, Votos } from "../models/startups";
 import Personas_Startups, { Personas_StartupsDTO } from "../models/personas_startups";
 import Personas from "../models/personas";
+import { formatInTimeZone } from 'date-fns-tz'
 const { Op } = require("sequelize");
 
 const getStartups = async (req: Request, res: Response) => {
     try {
+        let fecha = new Date();
         let startups: any[] = [];
         await Startups.findAll({
             order: [['id', 'ASC']],
             where: {
                 fecha: {
-                    [Op.eq]: Date.now()
+                    [Op.eq]: formatInTimeZone(fecha, 'America/La_Paz', 'yyyy-MM-dd')
                 }
             }
         }).then((t: any[]) => {
@@ -81,8 +83,8 @@ export async function resultadosStartups() : Promise<StartupsResultados[]>{
     const opciones: Set<number> = new Set();
     for (const i of startups) {
         let fecha = new Date();
-        const fechaStr = fecha.toJSON().split("T")[0];
-        if (fechaStr != i.fecha as any) {
+        const fechaStr = formatInTimeZone(fecha, 'America/La_Paz', 'yyyy-MM-dd');
+        if (fechaStr != formatInTimeZone(i.fecha, 'America/La_Paz', 'yyyy-MM-dd') as any) {
             continue;
         }
         let sR: StartupsResultados = new StartupsResultados();

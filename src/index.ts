@@ -9,6 +9,7 @@ import routerSugerencias from "./routers/sugerencias.router";
 import Personas from "./models/personas";
 import { resultadosStartups } from "./controllers/startups.controller";
 import Startups from "./models/startups";
+import { formatInTimeZone } from "date-fns-tz";
 const cors = require('cors');
 require('dotenv').config();
 const app:Express = express();
@@ -61,8 +62,8 @@ try {
     let startup: Startups = new Startups();
     startup.descripcion = r.descripcion;
     let fecha = new Date();
-    const fechaStr = fecha.toJSON().split("T")[0];
-    startup.fecha = fechaStr as any;
+    const fechaStr = formatInTimeZone(fecha, 'America/La_Paz', 'yyyy-MM-dd')
+    startup.fecha = formatInTimeZone(fechaStr, 'America/La_Paz', 'yyyy-MM-dd') as any;
     startup.foto = r.foto;
     startup.nombre = r.nombre;
     let body = {foto:startup.foto, nombre:startup.nombre, descripcion:startup.descripcion} as any;

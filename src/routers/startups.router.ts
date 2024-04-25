@@ -3,7 +3,7 @@ import { getStartups, postStartupsEncuesta, getResultadosStartups} from "../cont
 import { authIdentificador, authUsuario } from "../controllers/auth.controller";
 const routerStartups = express.Router();
 
-routerStartups.get('/', authIdentificador, getStartups);
+routerStartups.get('/', getStartups);
 routerStartups.post('/persona/:id', authIdentificador, postStartupsEncuesta);
 routerStartups.get('/resultados', getResultadosStartups);
 
