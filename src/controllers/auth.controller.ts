@@ -88,14 +88,14 @@ export const postLoginUsuario = async (req: Request, res: Response) => {
 };
 export const postLoginIdentificador = async (req: Request, res: Response) => {
   try {
-    const i: Identificador = req.body as any;
+    let i = req.body as any;
 
-    const identificador: Identificadores = await Identificadores.findOne({ where: { codigo_qr: i.codigo_qr.toUpperCase().toString() }, include: Personas }) as any;
+    let identificador: Identificadores = await Identificadores.findOne({ where: { codigo_qr: i.codigo_qr.toString() }, include: Personas }) as any;
 
-    if (identificador == undefined || identificador == null) {
+    if (identificador == null) {
       return res.status(403).json({ message: 'Identificador no permitido' });
     }
-    if (identificador.persona_id == undefined || identificador.persona_id == null) {
+    if (identificador.persona_id == null) {
       return res.status(403).json({ message: 'Identificador no permitido' });
     }
     const current_time = Math.floor(Date.now() / 1000);
