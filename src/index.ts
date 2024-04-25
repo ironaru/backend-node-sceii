@@ -13,7 +13,7 @@ import { formatInTimeZone } from "date-fns-tz";
 const cors = require('cors');
 require('dotenv').config();
 const app:Express = express();
-const cron = require('node-cron');
+// const cron = require('node-cron');
 
 const port = Number(process.env.PORT) || 3000;
 // Middleware
@@ -47,31 +47,32 @@ async function main() {
 
 main();
 
-cron.schedule('0 0 * * *', async function () {
-  await Personas.update({encuestado:false},{where:{encuestado:true}});
+// cron.schedule('0 0 25 4 *', async function () {
+//   await Personas.update({encuestado:false},{where:{encuestado:true}});
   
-});
-cron.schedule('0 1 0 25 4 *', async function () {
-try {
+// },undefined,true,"America/La_Paz");
+
+// cron.schedule('0 0 0 25 4 *', async function () {
+// try {
   
-  let resultados = await resultadosStartups();
-  while (resultados.length > 2) {
-    resultados.pop();
-  }
-  for(const r of resultados){
-    let startup: Startups = new Startups();
-    startup.descripcion = r.descripcion;
-    let fecha = new Date();
-    const fechaStr = formatInTimeZone(fecha, 'America/La_Paz', 'yyyy-MM-dd')
-    startup.fecha = formatInTimeZone(fechaStr, 'America/La_Paz', 'yyyy-MM-dd') as any;
-    startup.foto = r.foto;
-    startup.nombre = r.nombre;
-    let body = {foto:startup.foto, nombre:startup.nombre, descripcion:startup.descripcion} as any;
-    await Startups.create(body);
-  }
+//   let resultados = await resultadosStartups();
+//   while (resultados.length > 2) {
+//     resultados.pop();
+//   }
+//   for(const r of resultados){
+//     let startup: Startups = new Startups();
+//     startup.descripcion = r.descripcion;
+//     let fecha = new Date();
+//     const fechaStr = formatInTimeZone(fecha, 'America/La_Paz', 'yyyy-MM-dd')
+//     startup.fecha = formatInTimeZone(fechaStr, 'America/La_Paz', 'yyyy-MM-dd') as any;
+//     startup.foto = r.foto;
+//     startup.nombre = r.nombre;
+//     let body = {foto:startup.foto, nombre:startup.nombre, descripcion:startup.descripcion} as any;
+//     await Startups.create(body);
+//   }
 
-} catch (error: any) {
-    console.error('Error al agregar startups:', error.message);
-}
+// } catch (error: any) {
+//     console.error('Error al agregar startups:', error.message);
+// }
 
-});
+// },undefined,true,"America/La_Paz");
