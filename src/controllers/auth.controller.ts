@@ -90,7 +90,7 @@ export const postLoginIdentificador = async (req: Request, res: Response) => {
   try {
     const i: Identificador = req.body as any;
 
-    const identificador: Identificadores = await Identificadores.findOne({ where: { codigo_qr: i.codigo_qr }, include: Personas }) as any;
+    const identificador: Identificadores = await Identificadores.findOne({ where: { codigo_qr: i.codigo_qr.toUpperCase().toString() }, include: Personas }) as any;
 
     if (identificador == undefined || identificador == null) {
       return res.status(403).json({ message: 'Identificador no permitido' });
