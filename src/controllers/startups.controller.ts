@@ -113,6 +113,7 @@ export async function resultadosStartupsAnteriores(): Promise<StartupsResultados
         sR.id = i.id;
         sR.nombre = i.nombre;
         sR.foto = i.foto;
+        sR.fecha = i.fecha as any;
         sR.descripcion = i.descripcion;
         let startupVotos = await Personas_Startups.findAll({ where: { startup_id: i.id } }) as Personas_Startups[];
         for (const s of startupVotos) {
@@ -157,6 +158,7 @@ export async function resultadosStartups(): Promise<StartupsResultados[]> {
         sR.id = i.id;
         sR.nombre = i.nombre;
         sR.foto = i.foto;
+        sR.fecha = i.fecha as any;
         sR.descripcion = i.descripcion;
         let startupVotos = await Personas_Startups.findAll({ where: { startup_id: i.id } }) as Personas_Startups[];
         for (const s of startupVotos) {

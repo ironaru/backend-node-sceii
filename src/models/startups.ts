@@ -8,6 +8,7 @@ export class StartupsResultados {
     id!: number;
     nombre!: string;
     foto: string = "";
+    fecha: string = "";
     descripcion: string = "";
     totales_afirmativos: number = 0;
     votos_totales: Votos[] = [];
