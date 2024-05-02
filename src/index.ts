@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
   origin: 'https://tarija.dialoga.tja.dev.404.codes',
+  credentials:true, 
   optionsSuccessStatus: 200,
   preflightContinue: true
 
